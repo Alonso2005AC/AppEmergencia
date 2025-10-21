@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_registrar"
+            android:icon="@drawable/ic_add"
+            android:title="Registrar emergencia"/>
+        <item
+            android:id="@+id/nav_listar"
+            android:icon="@drawable/ic_list"
+            android:title="Listar emergencias"/>
+        <item
+            android:id="@+id/nav_cerrar"
+            android:icon="@drawable/ic_logout"
+            android:title="Cerrar sesión"/>
+    </group>
+</menu>

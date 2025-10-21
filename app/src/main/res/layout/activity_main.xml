@@ -1,124 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    tools:context=".Inicio.MainActivity">
+    android:fitsSystemWindows="true">
 
-    <!-- Fondo (ocupa toda la pantalla) -->
-    <ImageView
-    android:id="@+id/imgBackground"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:scaleType="centerCrop"
-    android:src="@drawable/fondo"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <!-- Contenedor principal (superpuesto sobre el fondo) -->
-    <LinearLayout
-
-        android:id="@+id/container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Logo -->
-        <ImageView
-            android:id="@+id/imgLogo"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_marginBottom="24dp"
-            android:contentDescription="Logo"
-            android:src="@drawable/logo_smp" />
-
-        <!-- Título -->
-
-        <!-- Campos de texto -->
-
-        <TextView
-            android:id="@+id/tvTitle"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Aplicación para Reportar Emergencias"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/etEmail"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:hint="Correo"
-            android:inputType="textEmailAddress"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text" />
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:title="Emergencias"
+                android:titleTextColor="@android:color/white"/>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:background="@android:drawable/edit_text" />
+        <FrameLayout
+            android:id="@+id/nav_host_fragment"  android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:padding="16dp"/>
 
-        <!-- Botón de inicio de sesión -->
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Iniciar sesión" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <!-- Enlace de registro -->
-        <TextView
-            android:id="@+id/tvRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="¿No tienes cuenta? Regístrate"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="13sp"
-            android:clickable="true"
-            android:focusable="true" />
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header_menu"
+        app:menu="@menu/drawer_menu"/>
 
-        <!-- Separador -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="18dp"
-            android:background="#DDDDDD" />
-
-        <!-- Botones adicionales -->
-        <Button
-            android:id="@+id/btnGuestReport"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="Reportar emergencia (invitado)" />
-
-        <Button
-            android:id="@+id/btnViewEmergencies"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Ver emergencias" />
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
