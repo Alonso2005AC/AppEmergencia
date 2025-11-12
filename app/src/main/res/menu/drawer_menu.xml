@@ -1,4 +1,5 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_registrar"
@@ -9,8 +10,11 @@
             android:icon="@drawable/ic_list"
             android:title="Listar emergencias"/>
         <item
-            android:id="@+id/nav_cerrar"
+            android:id="@+id/nav_editar_perfil"
             android:icon="@drawable/ic_logout"
-            android:title="Cerrar sesión"/>
+            android:title="Actualizar Datos" />
     </group>
+    <item
+        android:id="@+id/nav_cerrar"
+        android:title="Cerrar Sesion" />
 </menu>

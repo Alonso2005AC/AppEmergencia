@@ -1,3 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="incident_types">
+        <item>Seleccionar Tipo</item>
+        <item>Médico/Salud</item>
+        <item>Incendio</item>
+        <item>Accidente de Tráfico</item>
+        <item>Seguridad/Robo</item>
+        <item>Desastre Natural</item>
+        <item>Otro</item>
+    </string-array>
+
+    <string-array name="priority_levels">
+        <item>Asignar Prioridad</item>
+        <item>baja</item>
+        <item>media</item>
+        <item>alta</item>
+    </string-array>
 </resources>
