@@ -3,7 +3,6 @@ package com.example.appemergencias.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,11 +32,12 @@ public class LoginFragment extends Fragment {
     private EditText etEmail, etPassword;
     private Button btnLogin;
     private TextView tvRegister;
-    private Button btnGuestReport, btnViewEmergencies;
+    private Button btnGuestReport;
     private OnLoginSuccessListener listener;
-    private static final String TAG = "API_LOGIN"; // Usamos una etiqueta clara
 
     public interface OnLoginSuccessListener {
+        void onLoginAdminSuccess();
+
         void onLoginSuccessNavigateToMenu();
         void onRegisterClicked();
     }
@@ -53,25 +53,30 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Ocultar Toolbar (código sin cambios)
+        // ********** CÓDIGO CLAVE: OCULTAR TOOLBAR Y PANTALLA COMPLETA **********
         if (getActivity() instanceof AppCompatActivity) {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
             if (activity.getSupportActionBar() != null) {
-                activity.getSupportActionBar().hide();
+                activity.getSupportActionBar().hide(); // 1. Oculta la Toolbar
             }
+
+            // 2. Hace que el fondo se dibuje detrás de la barra de estado
             activity.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
+        // ************************************************************************
 
         // Inicialización de Vistas
         etEmail = view.findViewById(R.id.etEmail);
         etPassword = view.findViewById(R.id.etPassword);
         btnLogin = view.findViewById(R.id.btnLogin);
         tvRegister = view.findViewById(R.id.tvRegister);
-        btnGuestReport = view.findViewById(R.id.btnGuestReport);
-        btnViewEmergencies = view.findViewById(R.id.btnViewEmergencies);
 
+        btnGuestReport = view.findViewById(R.id.btnGuestReport);
+
+
+        // Listener del botón de login
         btnLogin.setOnClickListener(v -> realizarLogin());
 
         tvRegister.setOnClickListener(v -> {
@@ -81,7 +86,17 @@ public class LoginFragment extends Fragment {
         });
 
         btnGuestReport.setOnClickListener(v -> Toast.makeText(requireContext(), "Reportar Invitado (Pendiente)", Toast.LENGTH_SHORT).show());
-        btnViewEmergencies.setOnClickListener(v -> Toast.makeText(requireContext(), "Ver Emergencias (Pendiente)", Toast.LENGTH_SHORT).show());
+
+        Button btnLoginAdminRedirect = view.findViewById(R.id.btnLoginAdminRedirect);
+
+        btnLoginAdminRedirect.setOnClickListener(v -> {
+            // Abrir LoginAdminFragment
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment, new LoginAdminFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
     }
 
     @Override
@@ -95,20 +110,26 @@ public class LoginFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        // Restaurar Toolbar (código sin cambios)
+
+        // ********** CÓDIGO CLAVE: RESTAURAR TOOLBAR Y MODO NORMAL **********
         if (getActivity() instanceof AppCompatActivity) {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+            // 1. Restaura la visibilidad de la Toolbar y el título
             if (activity.getSupportActionBar() != null) {
                 activity.getSupportActionBar().show();
                 activity.getSupportActionBar().setTitle(MainActivity.APP_TITLE);
             }
+
+            // 2. Restaura el modo de pantalla completa a normal (contenido debajo de la barra)
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
+        // *******************************************************************
         listener = null;
     }
 
     // =====================================================================
-    // LÓGICA DE NEGOCIO Y API (CORREGIDA PARA JSON Y ROLES)
+    // LÓGICA DE NEGOCIO Y API
     // =====================================================================
 
     private void realizarLogin() {
@@ -122,53 +143,42 @@ public class LoginFragment extends Fragment {
 
         String url = "http://10.0.2.2/emergencias_api/usuarios/login.php";
         RequestParams params = new RequestParams();
-        params.put("email", email);
+        params.put("correo", email);
         params.put("password", pass);
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.post(url, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                String jsonResponse = new String(responseBody);
-                Log.d(TAG, "Respuesta del Servidor: " + jsonResponse);
-
                 try {
+                    String jsonResponse = new String(responseBody);
                     JSONObject json = new JSONObject(jsonResponse);
 
-                    // 1. CORRECCIÓN: Verifica "success" (no "status")
-                    if (json.has("success") && json.getBoolean("success")) {
+                    if (json.getBoolean("success")) {
 
                         JSONObject data = json.getJSONObject("data");
                         String idUsuario = data.getString("id_usuario");
                         String nombreUsuario = data.getString("nombre");
-                        String rolUsuario = data.getString("rol"); // <-- Lee el Rol
 
+                        // 1. OBTENER Y EDITAR SharedPreferences
                         SharedPreferences prefs = requireActivity().getSharedPreferences("SESSION", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
 
-                        // 2. GUARDA EL ROL
-                        editor.putString("id_usuario", idUsuario);
-                        editor.putString("usuario", nombreUsuario); // Clave para MainActivity
-                        editor.putString("rol", rolUsuario); // <-- Guarda el Rol
+                        // 2. GUARDAR LOS DATOS CLAVE
+                        editor.putString("id_usuario", idUsuario); // GUARDA LA CLAVE "id_usuario"
+                        editor.putString("nombre_usuario", nombreUsuario); // Útil para el HomeFragment
                         editor.apply();
 
                         Toast.makeText(requireContext(), "¡Bienvenido, " + nombreUsuario + "!", Toast.LENGTH_SHORT).show();
-
-                        // Llama al listener para la navegación
-                        if (listener != null) {
+                        if (listener !=null){
                             listener.onLoginSuccessNavigateToMenu();
                         }
 
-                    } else if (json.has("message")) {
-                        // Si "success" es false, muestra el mensaje de error.
-                        Toast.makeText(requireContext(), json.getString("message"), Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(requireContext(), "Error de formato de API inesperado.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireContext(), json.getString("message"), Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
-                    // Este catch se activa por el error de JSON mal formado (espacios, warnings PHP)
-                    Toast.makeText(requireContext(), "Error procesando la respuesta del servidor (JSON inválido).", Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "Error de JSON parsing: " + e.getMessage());
+                    Toast.makeText(requireContext(), "Error procesando la respuesta del servidor.", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }

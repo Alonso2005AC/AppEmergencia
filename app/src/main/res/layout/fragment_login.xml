@@ -99,11 +99,13 @@
                 android:text="Reportar emergencia (invitado)" />
 
             <Button
-                android:id="@+id/btnViewEmergencies"
+                android:id="@+id/btnLoginAdminRedirect"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Ver emergencias" />
+                android:text="Ingresar como Admin"
+                android:layout_marginTop="18dp"
+                android:textColor="@android:color/white"/>
+
 
         </LinearLayout>
 

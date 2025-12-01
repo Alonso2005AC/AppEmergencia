@@ -9,11 +9,9 @@
         android:name="com.example.appemergencias.fragments.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
-
         <action
-            android:id="@+id/action_loginFragment_to_menuFragment2"
-            app:destination="@id/menuFragment" />
-
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 
     <fragment
@@ -21,5 +19,21 @@
         android:name="com.example.appemergencias.fragments.MenuFragment"
         android:label="Menú Principal"
         tools:layout="@layout/fragment_menu" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.appemergencias.fragments.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_menuFragment"
+            app:destination="@id/menuFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_misReportesFragment"
+            app:destination="@id/misReportesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/misReportesFragment"
+        android:name="com.example.appemergencias.fragments.MisReportesFragment"
+        android:label="MisReportesFragment" />
 
 </navigation>
